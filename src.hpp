@@ -13,7 +13,7 @@ enum class ReplacementPolicy { kDEFAULT = 0, kFIFO, kLRU, kMRU, kLRU_K };
 class PageNode {
 public:
   PageNode(std::size_t page_id, std::size_t timestamp, std::size_t max_history) 
-    : page_id_(page_id), max_history_(max_history), history_count_(0) {
+    : page_id_(page_id), first_access_time_(timestamp), max_history_(max_history), history_count_(0) {
     history_ = new std::size_t[max_history_];
     history_[history_count_++] = timestamp;
   }
@@ -39,7 +39,7 @@ public:
   }
 
   std::size_t GetFirstAccessTime() const {
-    return history_[0];
+    return first_access_time_;  // Return the original insertion time
   }
 
   std::size_t GetLastAccessTime() const {
@@ -59,6 +59,7 @@ public:
 
 private:
   std::size_t page_id_;
+  std::size_t first_access_time_;  // Never changes after creation
   std::size_t max_history_;
   std::size_t history_count_;
   std::size_t* history_;
